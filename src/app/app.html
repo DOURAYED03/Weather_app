@@ -1,0 +1,113 @@
+<video *ngIf="!isNight" autoplay muted loop playsinline class="background-video" (loadeddata)="onVideoLoaded($event)">
+  <source src="/assets/background.mp4" type="video/mp4">
+</video>
+<video *ngIf="isNight" autoplay muted loop playsinline class="background-video" (loadeddata)="onVideoLoaded($event)">
+  <source src="/assets/background-2.mp4" type="video/mp4">
+</video>
+
+<app-navbar (search)="onSearch($event)"></app-navbar>
+
+<div class="main-container" *ngIf="weather">
+  <div class="left-panel">
+    <h2>Today Highlight</h2>
+    <div class="highlights-grid">
+      <div class="highlight-card">
+        <h3>Wind Speed</h3>
+        <p>{{ weather.wind.speed }} km/h 🌬️</p>
+        <div class="status-dots">
+          <span class="dot" [class.safe]="weather.wind.speed < 10" [class.warning]="weather.wind.speed >= 10 && weather.wind.speed < 20" [class.danger]="weather.wind.speed >= 20"></span>
+        </div>
+      </div>
+      <div class="highlight-card">
+        <h3>Humidity</h3>
+        <p>{{ weather.main.humidity }}% 💧</p>
+        <div class="status-dots">
+          <span class="dot" [class.safe]="weather.main.humidity < 50" [class.warning]="weather.main.humidity >= 50 && weather.main.humidity < 70" [class.danger]="weather.main.humidity >= 70"></span>
+        </div>
+      </div>
+      <div class="highlight-card">
+        <h3>UV Index</h3>
+        <p>{{ weather.uv }} ☀️</p>
+        <div class="status-dots">
+          <span class="dot" [class.safe]="weather.uv < 3" [class.warning]="weather.uv >= 3 && weather.uv < 6" [class.danger]="weather.uv >= 6"></span>
+        </div>
+      </div>
+      <div class="highlight-card">
+        <h3>Visibility</h3>
+        <p>{{ weather.visibility }} m 👁️</p>
+        <div class="status-dots">
+          <span class="dot" [class.safe]="weather.visibility > 5000" [class.warning]="weather.visibility >= 2000 && weather.visibility <= 5000" [class.danger]="weather.visibility < 2000"></span>
+        </div>
+      </div>
+    </div>
+    <div class="select-area">
+      <h3>Select Area</h3>
+      <div class="world-map" (click)="toggleCitySelector()">
+        🌍
+      </div>
+      <select *ngIf="showCitySelector" (change)="onCitySelect($event)" class="city-selector">
+        <option value="">Choose a city</option>
+        <option value="Tunis">Tunis, TN</option>
+        <option value="Paris">Paris, FR</option>
+        <option value="New York">New York, US</option>
+        <option value="Tokyo">Tokyo, JP</option>
+        <option value="London">London, GB</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="center-panel">
+    <div class="header">
+      <h1>SkyVista</h1>
+      <div class="agenda">
+        <div class="agenda-time">{{ currentTime }}</div>
+        <div class="agenda-date">{{ currentFullDate }}</div>
+      </div>
+    </div>
+    <div class="main-weather">
+      <h1>{{ weather.weather[0].main }}</h1>
+      <p>{{ weather.weather[0].description }}</p>
+      <div class="temp">
+        <span class="big-temp">{{ weather.main.temp }}°</span>
+        <span class="high-low">H: {{ weather.main.temp_max }}° L: {{ weather.main.temp_min }}°</span>
+      </div>
+      <p class="location">{{ weather.name }}, {{ weather.country }}</p>
+    </div>
+    <div class="daily-forecast">
+      <div class="day" 
+           [class.today]="day.isToday" 
+           [class.selected]="day.date === selectedDay" 
+           [class.no-data]="!day.hasData"
+           (click)="selectDay(day.date)" 
+           *ngFor="let day of getDailyForecast()">
+        <p class="day-name">{{ day.day }}</p>
+        <p class="day-temp" *ngIf="day.hasData">{{ day.temp }}°</p>
+        <p class="day-temp no-data-text" *ngIf="!day.hasData">--</p>
+        <p class="day-icon">{{ day.hasData ? '☀️' : '❓' }}</p>
+      </div>
+    </div>
+    <div class="chart-container">
+      <app-weather-chart [data]="forecast" [selectedDay]="selectedDay"></app-weather-chart>
+    </div>
+  </div>
+
+  <div class="right-panel">
+    <div class="wind-card">
+      <h3>Wind Status</h3>
+      <div class="small-chart">
+        <!-- Placeholder for small wind chart -->
+        📈
+      </div>
+      <p>{{ weather.wind.speed }} km/h</p>
+      <p>Now</p>
+    </div>
+    <div class="sun-card">
+      <h3>Sunrise & Sunset</h3>
+      <div class="sun-path">
+        <!-- Semi-circular sun path -->
+        🌅 🌞 🌇
+      </div>
+      <p>{{ weather.sunrise }} - {{ weather.sunset }}</p>
+    </div>
+  </div>
+</div>

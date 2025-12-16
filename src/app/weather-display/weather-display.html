@@ -1,0 +1,10 @@
+<div *ngIf="weather" class="weather-display">
+  <div class="weather-info">
+    <h2>{{ weather.name }}</h2>
+    <img [src]="'http://openweathermap.org/img/wn/' + weather.weather[0].icon + '@2x.png'" alt="Weather icon" class="weather-icon">
+    <p>{{ weather.main.temp }}°C {{ getWeatherEmoji(weather.weather[0].main) }}</p>
+    <p>{{ weather.weather[0].description }} {{ getWeatherEmoji(weather.weather[0].main) }}</p>
+    <p>Humidity: {{ weather.main.humidity }}% 💧</p>
+    <p>Wind: {{ weather.wind.speed }} m/s 🌬️</p>
+  </div>
+</div>

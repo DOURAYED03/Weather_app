@@ -1,0 +1,25 @@
+<div class="search-bar">
+  <div class="search-input-wrapper">
+    <span class="search-icon">🔍</span>
+    <input 
+      type="text" 
+      [(ngModel)]="city" 
+      placeholder="Search city..." 
+      [class.error]="showError"
+      (keyup.enter)="onSearch()"
+      (input)="onInputChange()"
+      (focus)="onFocus()"
+      (blur)="onBlur()">
+    <span class="loading-spinner" *ngIf="isLoading">⏳</span>
+    <div class="error-message" *ngIf="showError">City not found</div>
+    <div class="suggestions" *ngIf="showSuggestions && suggestions.length > 0">
+      <div class="suggestion-item" *ngFor="let s of suggestions" (mousedown)="selectCity(s)">
+        <span class="city-icon">📍</span>
+        <span class="city-name">{{ getDisplayName(s) }}</span>
+      </div>
+    </div>
+  </div>
+  <button (click)="onSearch()">
+    <span>Search</span>
+  </button>
+</div>

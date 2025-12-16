@@ -1,0 +1,12 @@
+<div class="chart-wrapper">
+  <canvas *ngIf="hasData" baseChart
+    [data]="lineChartData"
+    [options]="lineChartOptions"
+    [type]="lineChartType">
+  </canvas>
+  <div *ngIf="!hasData" class="no-data">
+    <span class="no-data-icon">📊</span>
+    <p>Information not available</p>
+    <span class="no-data-hint">No forecast data for this day</span>
+  </div>
+</div>

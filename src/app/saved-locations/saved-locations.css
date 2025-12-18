@@ -1,0 +1,361 @@
+.saved-locations-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.saved-locations-container h2 {
+  color: #333;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.add-location-form {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 30px;
+  border: 1px solid #e9ecef;
+}
+
+.add-location-form h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: #495057;
+}
+
+.form-group {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.form-group input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.form-group button {
+  padding: 10px 20px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.form-group button:hover:not(:disabled) {
+  background: #0056b3;
+}
+
+.form-group button:disabled {
+  background: #6c757d;
+  cursor: not-allowed;
+}
+
+.locations-list {
+  margin-top: 30px;
+}
+
+.locations-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.locations-header h3 {
+  margin: 0;
+  color: #495057;
+}
+
+.clear-all-btn {
+  padding: 8px 16px;
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.clear-all-btn:hover {
+  background: #c82333;
+}
+
+.location-card {
+  background: white;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.2s;
+}
+
+.location-card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.location-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.location-name h4 {
+  margin: 0 0 5px 0;
+  color: #333;
+}
+
+.location-name small {
+  color: #6c757d;
+  font-size: 12px;
+}
+
+.location-weather {
+  text-align: center;
+  flex: 1;
+}
+
+.weather-temp {
+  font-size: 24px;
+  font-weight: bold;
+  color: #007bff;
+  margin-bottom: 5px;
+}
+
+.weather-desc {
+  color: #6c757d;
+  font-size: 14px;
+  text-transform: capitalize;
+}
+
+.location-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.location-actions button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: background-color 0.2s;
+}
+
+.edit-btn {
+  background: #ffc107;
+  color: #212529;
+}
+
+.edit-btn:hover {
+  background: #e0a800;
+}
+
+.delete-btn {
+  background: #dc3545;
+  color: white;
+}
+
+.delete-btn:hover {
+  background: #c82333;
+}
+
+.edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.edit-form .form-group {
+  flex-direction: column;
+  gap: 10px;
+}
+
+.edit-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.save-btn {
+  background: #28a745;
+  color: white;
+}
+
+.save-btn:hover {
+  background: #218838;
+}
+
+.cancel-btn {
+  background: #6c757d;
+  color: white;
+}
+
+.cancel-btn:hover {
+  background: #5a6268;
+}
+
+.no-locations {
+  text-align: center;
+  padding: 40px 20px;
+  color: #6c757d;
+}
+
+.no-locations p {
+  font-size: 16px;
+  margin: 0;
+}
+
+.favorites-section {
+  background: #fff3cd;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 30px;
+  border: 1px solid #ffeaa7;
+}
+
+.favorites-section h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: #856404;
+}
+
+.add-favorite-form {
+  margin-bottom: 20px;
+}
+
+.favorites-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.favorite-card {
+  background: white;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 15px;
+  flex: 1;
+  min-width: 250px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.2s;
+}
+
+.favorite-card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.favorite-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.favorite-name h4 {
+  margin: 0 0 5px 0;
+  color: #333;
+}
+
+.favorite-name small {
+  color: #6c757d;
+  font-size: 12px;
+}
+
+.favorite-weather {
+  text-align: center;
+  flex: 1;
+}
+
+.favorite-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.remove-favorite-star {
+  font-size: 20px;
+  color: #dc3545;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.remove-favorite-star:hover {
+  color: #c82333;
+}
+
+.no-favorites {
+  text-align: center;
+  padding: 20px;
+  color: #856404;
+}
+
+.no-favorites p {
+  font-size: 14px;
+  margin: 0;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .saved-locations-container {
+    padding: 10px;
+  }
+
+  .location-info {
+    flex-direction: column;
+    gap: 15px;
+    align-items: stretch;
+  }
+
+  .location-weather {
+    order: -1;
+  }
+
+  .location-actions {
+    justify-content: center;
+  }
+
+  .form-group {
+    flex-direction: column;
+  }
+
+  .form-group input,
+  .form-group button {
+    width: 100%;
+  }
+
+  .favorites-list {
+    flex-direction: column;
+  }
+
+  .favorite-card {
+    min-width: auto;
+  }
+
+  .favorite-info {
+    flex-direction: column;
+    gap: 10px;
+    align-items: stretch;
+  }
+
+  .favorite-weather {
+    order: -1;
+  }
+
+  .favorite-actions {
+    justify-content: center;
+  }
+}

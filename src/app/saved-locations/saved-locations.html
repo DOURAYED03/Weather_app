@@ -1,0 +1,145 @@
+<div class="saved-locations-container">
+  <h2>Saved Locations</h2>
+
+  <!-- Favorites Section -->
+  <div class="favorites-section">
+    <h3>Favorite Locations</h3>
+
+    <!-- Add to Favorites Form -->
+    <div class="add-favorite-form">
+      <div class="form-group">
+        <input
+          type="text"
+          [(ngModel)]="newFavoriteName"
+          placeholder="City name"
+          (keyup.enter)="addToFavorites()"
+        >
+        <input
+          type="text"
+          [(ngModel)]="newFavoriteCountry"
+          placeholder="Country"
+          (keyup.enter)="addToFavorites()"
+        >
+        <button (click)="addToFavorites()" [disabled]="!newFavoriteName.trim() || !newFavoriteCountry.trim()">
+          Add to Favorites
+        </button>
+      </div>
+    </div>
+
+    <!-- Favorites List -->
+    <div class="favorites-list" *ngIf="favoriteLocations.length > 0; else noFavorites">
+      <div class="favorite-card" *ngFor="let location of favoriteLocations; trackBy: trackByLocationId">
+        <div class="favorite-info">
+          <div class="favorite-name">
+            <h4>{{ location.name }}, {{ location.country }}</h4>
+            <small>Added: {{ location.addedAt | date:'short' }}</small>
+          </div>
+
+          <div class="favorite-weather" *ngIf="getWeatherForLocation(location.id)">
+            <div class="weather-temp">
+              {{ getWeatherForLocation(location.id).main?.temp }}°C
+            </div>
+            <div class="weather-desc">
+              {{ getWeatherForLocation(location.id).weather?.[0]?.description }}
+            </div>
+          </div>
+
+          <div class="favorite-actions">
+            <span class="remove-favorite-star" (click)="removeFromFavorites(location)">★</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- No Favorites Message -->
+    <ng-template #noFavorites>
+      <div class="no-favorites">
+        <p>No favorite locations yet. Add your first favorite above!</p>
+      </div>
+    </ng-template>
+  </div>
+
+  <!-- Add New Location Form -->
+  <div class="add-location-form">
+    <h3>Add New Location</h3>
+    <div class="form-group">
+      <input
+        type="text"
+        [(ngModel)]="newLocationName"
+        placeholder="City name"
+        (keyup.enter)="addLocation()"
+      >
+      <input
+        type="text"
+        [(ngModel)]="newLocationCountry"
+        placeholder="Country"
+        (keyup.enter)="addLocation()"
+      >
+      <button (click)="addLocation()" [disabled]="!newLocationName.trim() || !newLocationCountry.trim()">
+        Add Location
+      </button>
+    </div>
+  </div>
+
+  <!-- Locations List -->
+  <div class="locations-list" *ngIf="locations.length > 0; else noLocations">
+    <div class="locations-header">
+      <h3>Your Saved Locations</h3>
+      <button class="clear-all-btn" (click)="clearAllLocations()">Clear All</button>
+    </div>
+
+    <div class="location-card" *ngFor="let location of locations; trackBy: trackByLocationId">
+      <div class="location-info" *ngIf="!isEditing(location)">
+        <div class="location-name">
+          <h4>{{ location.name }}, {{ location.country }}</h4>
+          <small>Added: {{ location.addedAt | date:'short' }}</small>
+          <span class="favorite-star" [class.favorited]="location.isFavorite" (click)="toggleFavorite(location)">★</span>
+        </div>
+
+        <div class="location-weather" *ngIf="getWeatherForLocation(location.id)">
+          <div class="weather-temp">
+            {{ getWeatherForLocation(location.id).main?.temp }}°C
+          </div>
+          <div class="weather-desc">
+            {{ getWeatherForLocation(location.id).weather?.[0]?.description }}
+          </div>
+        </div>
+
+        <div class="location-actions">
+          <button class="toggle-favorite-btn" (click)="toggleFavorite(location)">
+            {{ location.isFavorite ? 'Remove from Favorites' : 'Add to Favorites' }}
+          </button>
+          <button class="edit-btn" (click)="startEditing(location)">Edit</button>
+          <button class="delete-btn" (click)="removeLocation(location.id)">Remove</button>
+        </div>
+      </div>
+
+      <!-- Edit Form -->
+      <div class="edit-form" *ngIf="isEditing(location)">
+        <div class="form-group">
+          <input
+            type="text"
+            [(ngModel)]="editingLocation!.name"
+            placeholder="City name"
+          >
+          <input
+            type="text"
+            [(ngModel)]="editingLocation!.country"
+            placeholder="Country"
+          >
+        </div>
+        <div class="edit-actions">
+          <button class="save-btn" (click)="saveEdit()">Save</button>
+          <button class="cancel-btn" (click)="cancelEdit()">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- No Locations Message -->
+  <ng-template #noLocations>
+    <div class="no-locations">
+      <p>No saved locations yet. Add your first location above!</p>
+    </div>
+  </ng-template>
+</div>

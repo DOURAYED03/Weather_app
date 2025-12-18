@@ -1,4 +1,4 @@
-.background-video {
+ .background-video {
   position: fixed;
   top: 0;
   left: 0;
@@ -208,9 +208,74 @@ body::before {
   color: white;
 }
 
-.center-panel {
-  flex: 1;
+.favorites-list {
+  margin-top: 15px;
+}
+
+.favorites-list h4 {
+  color: white;
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+}
+
+.favorite-item {
+  display: flex;
   justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(3px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin-bottom: 5px;
+  color: white;
+  transition: background-color 0.2s, transform 0.2s;
+}
+
+.favorite-item:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.favorite-name {
+  flex: 1;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.favorite-name:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.favorite-star {
+  cursor: pointer;
+  font-size: 1.2rem;
+  padding: 4px;
+  border-radius: 4px;
+  transition: background-color 0.2s, transform 0.2s;
+}
+
+.favorite-star:hover {
+  background: rgba(255, 0, 0, 0.3);
+  transform: scale(1.1);
+}
+
+.favorite-star-title {
+  cursor: pointer;
+  font-size: 3rem;
+  padding: 10px;
+  border-radius: 50%;
+  transition: background-color 0.2s, transform 0.2s, color 0.2s;
+  margin-right: 20px;
+  color: white;
+}
+
+.favorite-star-title:hover {
+  background: rgba(255, 215, 0, 0.3);
+  transform: scale(1.1);
+  color: #ffd700;
 }
 
 .header {

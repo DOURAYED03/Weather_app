@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { Navbar } from './navbar/navbar';
 import { WeatherChart } from './weather-chart/weather-chart';
 import { WeatherService } from './services/weather';
-
+import { LocationsService, SavedLocation } from './services/locations';
 @Component({
   selector: 'app-root',
-  imports: [CommonModule, Navbar, WeatherChart],
+  imports: [CommonModule, RouterModule, Navbar, WeatherChart],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
@@ -19,6 +20,7 @@ export class App implements OnInit {
   currentFullDate: string = '';
   isNight: boolean = false;
   backgroundVideo: string = '/assets/background.mp4';
+  locations: any[] = [];
 
   updateDateTime() {
     const now = new Date();
@@ -58,29 +60,34 @@ export class App implements OnInit {
     }
   }
 
-  constructor(private weatherService: WeatherService) {}
+  constructor(private weatherService: WeatherService, private locationsService: LocationsService) {}
 
   ngOnInit() {
     this.onSearch('Tunis');
     this.updateDateTime();
     setInterval(() => this.updateDateTime(), 1000);
-    
+
     // Set initial background based on time
     const hour = new Date().getHours();
     this.isNight = hour >= 19 || hour < 6;
     this.backgroundVideo = this.isNight ? '/assets/background-2.mp4' : '/assets/background.mp4';
-    
+
     // Restore video position after a small delay
     setTimeout(() => this.restoreVideoTime(), 500);
-    
+
     // Save video time before page unload
     window.addEventListener('beforeunload', () => this.saveVideoTime());
-    
+
     // Save when tab becomes hidden
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) {
         this.saveVideoTime();
       }
+    });
+
+    // Subscribe to locations
+    this.locationsService.getLocations().subscribe(locations => {
+      this.locations = locations.filter(loc => loc.isFavorite);
     });
   }
 
@@ -174,7 +181,7 @@ export class App implements OnInit {
     const key = this.isNight ? 'videoTime_night' : 'videoTime_day';
     const savedTime = localStorage.getItem(key);
     console.log('Restoring video time:', savedTime);
-    
+
     if (savedTime) {
       const time = parseFloat(savedTime);
       // Wait for video to be ready, then set time
@@ -185,7 +192,48 @@ export class App implements OnInit {
       }, { once: true });
       video.currentTime = time;
     }
-    
+
     video.play().catch(() => {});
+  }
+
+  addCurrentLocationToFavorites() {
+    if (this.weather) {
+      // Check if this location is already in favorites
+      const isAlreadyFavorite = this.locations.some(loc =>
+        loc.name === this.weather.name && loc.country === this.weather.country && loc.isFavorite
+      );
+
+      if (isAlreadyFavorite) {
+        alert('This location is already in favorites');
+        return;
+      }
+
+      this.locationsService.addLocation({
+        name: this.weather.name,
+        country: this.weather.country,
+        lat: this.weather.coord.lat,
+        lon: this.weather.coord.lon,
+        isFavorite: true
+      });
+    }
+  }
+
+  selectFavoriteLocation(location: any) {
+    this.onSearch(location.name);
+  }
+
+  removeFavoriteLocation(location: any) {
+    if (confirm(`Are you sure you want to remove ${location.name}, ${location.country} from favorites?`)) {
+      this.locationsService.removeLocation(location.id);
+    }
+  }
+
+  get isCurrentLocationFavorite(): boolean {
+    if (!this.weather) return false;
+    return this.locations.some(loc =>
+      loc.name === this.weather.name &&
+      loc.country === this.weather.country &&
+      loc.isFavorite
+    );
   }
 }

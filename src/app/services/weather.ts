@@ -1,22 +1,23 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of, map, catchError } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class WeatherService {
-  private apiKey = 'daa82813cba09f141a7d265aad49ee8b';
   private baseUrl = 'https://api.openweathermap.org/data/2.5';
 
   constructor(private http: HttpClient) { }
 
   getWeather(city: string): Observable<any> {
-    const url = `${this.baseUrl}/weather?q=${city}&appid=${this.apiKey}&units=metric`;
+    const url = `${this.baseUrl}/weather?q=${city}&appid=${environment.openWeatherMapApiKey}&units=metric`;
     return this.http.get(url).pipe(
       map((data: any) => ({
         name: data.name,
         country: data.sys.country,
+        coord: data.coord,
         main: {
           temp: Math.round(data.main.temp),
           temp_min: Math.round(data.main.temp_min),
@@ -37,7 +38,7 @@ export class WeatherService {
   }
 
   getForecast(city: string): Observable<any> {
-    const url = `${this.baseUrl}/forecast?q=${city}&appid=${this.apiKey}&units=metric`;
+    const url = `${this.baseUrl}/forecast?q=${city}&appid=${environment.openWeatherMapApiKey}&units=metric`;
     return this.http.get(url).pipe(
       catchError(() => this.getMockForecast())
     );
@@ -58,6 +59,7 @@ export class WeatherService {
     return of({
       name: city,
       country: 'TN',
+      coord: { lat: 36.8065, lon: 10.1815 },
       main: {
         temp: 18,
         temp_min: 14,

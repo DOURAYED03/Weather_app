@@ -1,124 +1,219 @@
-<video *ngIf="!isNight" autoplay muted loop playsinline class="background-video" (loadeddata)="onVideoLoaded($event)">
+<video *ngIf="!isNight" autoplay muted loop playsinline class="background-video"
+  [class.theme-clear]="weatherTheme === 'clear'" [class.theme-clouds]="weatherTheme === 'clouds'"
+  [class.theme-rain]="weatherTheme === 'rain'" (loadeddata)="onVideoLoaded($event)">
   <source src="/assets/background.mp4" type="video/mp4">
 </video>
 <video *ngIf="isNight" autoplay muted loop playsinline class="background-video" (loadeddata)="onVideoLoaded($event)">
   <source src="/assets/background-2.mp4" type="video/mp4">
 </video>
 
-<app-navbar (search)="onSearch($event)"></app-navbar>
+<div class="overlay-gradient"></div>
+
+<app-navbar (search)="onSearch($event)" [units]="units" (toggleUnits)="toggleUnits()"></app-navbar>
+
+<app-map *ngIf="showMap" (locationSelected)="onMapLocationSelected($event)" (closeMap)="closeMap()"></app-map>
 
 <router-outlet></router-outlet>
 
-<div class="main-container" *ngIf="weather">
-  <div class="left-panel">
+<div class="main-container glass-panel" *ngIf="weather" [ngClass]="weatherTheme">
+
+  <div class="left-panel glass-sub-panel">
     <h2>Today Highlight</h2>
     <div class="highlights-grid">
       <div class="highlight-card">
-        <h3>Wind Speed</h3>
-        <p>{{ weather.wind.speed }} km/h 🌬️</p>
-        <div class="status-dots">
-          <span class="dot" [class.safe]="weather.wind.speed < 10" [class.warning]="weather.wind.speed >= 10 && weather.wind.speed < 20" [class.danger]="weather.wind.speed >= 20"></span>
+        <h3>Wind Status</h3>
+        <p>{{ displaySpeed(weather.wind.speed) }}</p>
+        <div class="wind-direction">
+          <span class="wind-arrow" [style.transform]="'rotate(' + weather.wind.deg + 'deg)'">➤</span>
         </div>
       </div>
       <div class="highlight-card">
         <h3>Humidity</h3>
-        <p>{{ weather.main.humidity }}% 💧</p>
-        <div class="status-dots">
-          <span class="dot" [class.safe]="weather.main.humidity < 50" [class.warning]="weather.main.humidity >= 50 && weather.main.humidity < 70" [class.danger]="weather.main.humidity >= 70"></span>
-        </div>
-      </div>
-      <div class="highlight-card">
-        <h3>UV Index</h3>
-        <p>{{ weather.uv }} ☀️</p>
-        <div class="status-dots">
-          <span class="dot" [class.safe]="weather.uv < 3" [class.warning]="weather.uv >= 3 && weather.uv < 6" [class.danger]="weather.uv >= 6"></span>
+        <p>{{ weather.main.humidity }}%</p>
+        <div class="progress-bar">
+          <div class="progress-fill" [style.width.%]="weather.main.humidity"></div>
         </div>
       </div>
       <div class="highlight-card">
         <h3>Visibility</h3>
-        <p>{{ weather.visibility }} m 👁️</p>
-        <div class="status-dots">
-          <span class="dot" [class.safe]="weather.visibility > 5000" [class.warning]="weather.visibility >= 2000 && weather.visibility <= 5000" [class.danger]="weather.visibility < 2000"></span>
-        </div>
+        <p>{{ weather.visibility / 1000 }} km</p>
+        <div class="status-text">{{ weather.visibility >= 10000 ? 'Excellent' : 'Poor' }}</div>
+      </div>
+      <div class="highlight-card">
+        <h3>Air Pressure</h3>
+        <p>{{ weather.main.pressure }} hPa</p>
       </div>
     </div>
-    <div class="select-area">
-      <h3>Select Area</h3>
-      <div class="world-map" (click)="toggleCitySelector()">
-        🌍
+
+    <div class="favorites-list" *ngIf="locations.length > 0" style="margin-top: 15px;">
+      <h4 style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 8px;">Saved Locations</h4>
+      <div class="favorite-tags" style="display: flex; flex-wrap: wrap; gap: 6px;">
+        <span class="favorite-tag" *ngFor="let location of locations" (click)="selectFavoriteLocation(location)">
+          {{ location.name }}
+          <span class="remove-favorite" (click)="removeFavoriteLocation(location); $event.stopPropagation()">×</span>
+        </span>
       </div>
-      <select *ngIf="showCitySelector" (change)="onCitySelect($event)" class="city-selector">
-        <option value="">Choose a city</option>
-        <option value="Tunis">Tunis, TN</option>
-        <option value="Paris">Paris, FR</option>
-        <option value="New York">New York, US</option>
-        <option value="Tokyo">Tokyo, JP</option>
-        <option value="London">London, GB</option>
-      </select>
-      <div class="favorites-list" *ngIf="locations.length > 0">
-        <h4>Favorites</h4>
-        <div class="favorite-item" *ngFor="let location of locations">
-          <span class="favorite-name" (click)="selectFavoriteLocation(location)">
-            {{ location.name }}, {{ location.country }}
-          </span>
-          <span class="favorite-star" (click)="removeFavoriteLocation(location)">⭐</span>
+    </div>
+
+    <div class="select-area" style="margin-top: 15px; display: flex; flex-direction: column; gap: 15px;">
+      <h3>Select City</h3>
+      <div class="globe-wrapper" style="display: flex; justify-content: center;">
+        <app-globe (select)="openMap()"></app-globe>
+      </div>
+
+      <div class="lifestyle-insights" *ngIf="lifestyleTips.length > 0" style="margin-top: 25px;">
+        <h4
+          style="font-size: 0.85rem; opacity: 0.7; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1.5px;">
+          Lifestyle Insights</h4>
+        <div class="lifestyle-grid">
+          <div class="lifestyle-card glass-mini-card" *ngFor="let tip of lifestyleTips">
+            <span class="tip-icon">{{ tip.icon }}</span>
+            <div class="tip-info" style="gap: 2px;">
+              <span class="tip-label">{{ tip.label }}</span>
+              <span class="tip-status" [style.color]="tip.color">{{ tip.status }}</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
   <div class="center-panel">
-    <div class="header">
-      <span class="favorite-star-title" (click)="addCurrentLocationToFavorites()" title="Add to Favorites">{{ isCurrentLocationFavorite ? '★' : '☆' }}</span>
-      <div class="agenda">
-        <div class="agenda-time">{{ currentTime }}</div>
-        <div class="agenda-date">{{ currentFullDate }}</div>
+    <!-- ... existing center panel ... -->
+    <div class="location-header centered" style="justify-content: center; margin-bottom: 10px;">
+      <span class="location-icon">📍</span>
+      <span class="location-name" style="font-size: 1.5rem; font-weight: 600;">{{ weather.name }}, {{ weather.country
+        }}</span>
+      <span class="favorite-star" (click)="addCurrentLocationToFavorites()" [class.active]="isCurrentLocationFavorite"
+        style="font-size: 1.5rem; margin-left: 10px; cursor: pointer;">
+        {{ isCurrentLocationFavorite ? '★' : '☆' }}
+      </span>
+    </div>
+    <div class="current-weather-hero">
+      <div class="weather-icon-large">
+        <img [src]="'https://openweathermap.org/img/wn/' + weather.weather[0].icon + '@4x.png'" alt="weather icon">
+      </div>
+      <div class="temp-display">
+        <span class="big-temp">{{ displayTemp(weather.main.temp) }}°</span>
+        <span class="unit">{{ units === 'metric' ? 'C' : 'F' }}</span>
+      </div>
+      <div class="weather-desc">
+        <h2>{{ weather.weather[0].main }}</h2>
+        <p>{{ currentFullDate }}</p>
+        <p>{{ currentTime }}</p>
       </div>
     </div>
-    <div class="main-weather">
-      <h1>{{ weather.weather[0].main }}</h1>
-      <p>{{ weather.weather[0].description }}</p>
-      <div class="temp">
-        <span class="big-temp">{{ weather.main.temp }}°</span>
-        <span class="high-low">H: {{ weather.main.temp_max }}° L: {{ weather.main.temp_min }}°</span>
-      </div>
-      <p class="location">{{ weather.name }}, {{ weather.country }}</p>
-    </div>
-    <div class="daily-forecast">
-      <div class="day" 
-           [class.today]="day.isToday" 
-           [class.selected]="day.date === selectedDay" 
-           [class.no-data]="!day.hasData"
-           (click)="selectDay(day.date)" 
-           *ngFor="let day of getDailyForecast()">
-        <p class="day-name">{{ day.day }}</p>
-        <p class="day-temp" *ngIf="day.hasData">{{ day.temp }}°</p>
-        <p class="day-temp no-data-text" *ngIf="!day.hasData">--</p>
-        <p class="day-icon">{{ day.hasData ? '☀️' : '❓' }}</p>
+
+    <div class="hourly-forecast-section">
+      <h3>24-Hour Detail ({{ selectedDay }})</h3>
+      <div class="hourly-scroll">
+        <div class="hourly-item" *ngFor="let item of detailedHourly">
+          <span class="time">{{ item.time }}</span>
+          <img [src]="'https://openweathermap.org/img/wn/' + item.icon + '.png'" alt="icon">
+          <span class="temp">{{ displayTemp(item.temp) }}°</span>
+          <div class="hourly-details-mini" style="font-size: 0.7rem; opacity: 0.7;">
+            <span>💧 {{ item.humidity }}%</span>
+            <span>💨 {{ displaySpeed(item.windSpeed) }}</span>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="chart-container">
+
+    <div class="daily-forecast-section">
+      <h3>7-Day Forecast</h3>
+      <div class="daily-list">
+        <div class="daily-item glass-mini-card" *ngFor="let day of getDailyForecast()" [class.today]="day.isToday"
+          [class.selected]="day.date === selectedDay" (click)="selectDay(day.date)">
+          <span class="day-name">{{ day.day }}</span>
+          <div class="day-icon-wrapper"
+            style="height: 30px; display: flex; align-items: center; justify-content: center;">
+            <img *ngIf="day.hasData && day.icon" [src]="'https://openweathermap.org/img/wn/' + day.icon + '.png'"
+              alt="icon" style="width: 30px; height: 30px;">
+            <span *ngIf="!day.hasData">-</span>
+          </div>
+          <span class="day-temp">{{ day.hasData ? day.temp + '°' : '--' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="chart-section">
       <app-weather-chart [data]="forecast" [selectedDay]="selectedDay"></app-weather-chart>
     </div>
   </div>
 
-  <div class="right-panel">
-    <div class="wind-card">
-      <h3>Wind Status</h3>
-      <div class="small-chart">
-        <!-- Placeholder for small wind chart -->
-        📈
-      </div>
-      <p>{{ weather.wind.speed }} km/h</p>
-      <p>Now</p>
-    </div>
+  <div class="right-panel glass-sub-panel">
     <div class="sun-card">
       <h3>Sunrise & Sunset</h3>
-      <div class="sun-path">
-        <!-- Semi-circular sun path -->
-        🌅 🌞 🌇
+      <div class="sun-visual">
+        <div class="sun-arc">
+          <div class="sun-dot" [style.left.%]="sunPercent" [style.bottom.%]="sunTop">☀️</div>
+          <div class="sun-times-overlay">
+            <div class="time-label start">
+              <span>Sunrise</span>
+              <span>{{ weather.sunrise }}</span>
+            </div>
+            <div class="time-label end">
+              <span>Sunset</span>
+              <span>{{ weather.sunset }}</span>
+            </div>
+          </div>
+        </div>
       </div>
-      <p>{{ weather.sunrise }} - {{ weather.sunset }}</p>
+    </div>
+
+    <div class="environmental-widgets">
+      <div class="aqi-card glass-mini-card" *ngIf="airQuality">
+        <div class="aqi-header">
+          <span class="label">Air Quality Index</span> <!-- Fixed spacing -->
+          <span class="aqi-value" [ngClass]="'aqi-' + airQuality.aqi">{{ getAQIDesc(airQuality.aqi) }}</span>
+        </div>
+        <div class="aqi-bar">
+          <div class="aqi-fill" [style.width.%]="airQuality.aqi * 20" [ngClass]="'aqi-bg-' + airQuality.aqi"></div>
+        </div>
+      </div>
+
+      <div class="rain-card glass-mini-card" *ngIf="forecast && forecast.length > 0">
+        <div class="rain-header">
+          <span class="label">Rain Probability</span>
+          <span class="rain-value">{{ Math.round((forecast[0].pop || 0) * 100) }}%</span>
+        </div>
+        <div class="rain-bar">
+          <div class="rain-fill" [style.width.%]="(forecast[0].pop || 0) * 100"></div>
+        </div>
+      </div>
+
+      <div class="pressure-card glass-mini-card" *ngIf="weather.main.pressure">
+        <div class="detail-row">
+          <span>Atmospheric Pressure</span>
+          <span>{{ weather.main.pressure }} hPa</span>
+        </div>
+      </div>
+
+      <div class="gusts-card glass-mini-card" *ngIf="weather.wind.gust">
+        <div class="detail-row">
+          <span>Wind Gusts</span>
+          <span>{{ weather.wind.gust }} km/h</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="extra-details" style="margin-top: 25px;"> <!-- Increased margin -->
+      <div class="detail-row">
+        <span>UV Index</span>
+        <span>{{ weather.uv }}</span>
+      </div>
+      <div class="detail-row">
+        <span>Feels Like</span>
+        <span>{{ displayTemp(weather.main.feels_like) }}°</span>
+      </div>
+      <div class="detail-row">
+        <span>Visibility</span>
+        <span>{{ weather.visibility / 1000 }} km</span>
+      </div>
+    </div>
+
+    <div class="quote-card icon-quote">
+      <p>"Wherever you go, no matter what the weather, always bring your own sunshine."</p>
     </div>
   </div>
 </div>

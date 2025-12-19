@@ -1,5 +1,5 @@
-# TODO: Make Graph Show Only Selected Day
+# Weather Chart Design Enhancement TODO
 
-- [x] Update app.ts: Add selectedDay property and method to filter forecast data for the selected day
-- [x] Update app.html: Make daily forecast days clickable to select a day, and pass selectedDay to weather-chart
-- [x] Update weather-chart.ts: Add selectedDay input and modify ngOnChanges to filter data to show only the selected day's temperatures
+- [x] Update weather-chart.ts: Introduce modern color palette (blue gradients), add chart animations, enhance tooltip styling, improve line and point aesthetics
+- [x] Update weather-chart.css: Refine container styling with better shadows, borders, and background effects
+- [x] Test the updated chart in the application

@@ -1,4 +1,9 @@
 <div class="navbar">
   <h1>SkyVista</h1>
-  <app-search-bar (search)="onSearch($event)"></app-search-bar>
+  <div class="right-controls" style="display: flex; gap: 15px; align-items: center;">
+    <app-search-bar (search)="onSearch($event)"></app-search-bar>
+    <button class="nav-unit-toggle" (click)="onToggleUnits()">
+      {{ units === 'metric' ? '°C' : '°F' }}
+    </button>
+  </div>
 </div>

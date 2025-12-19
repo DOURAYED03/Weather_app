@@ -1,7 +1,5 @@
 <div class="chart-wrapper">
-  <canvas *ngIf="hasData" baseChart
-    [data]="lineChartData"
-    [options]="lineChartOptions"
+  <canvas *ngIf="hasData" baseChart [data]="lineChartData" [options]="lineChartOptions" [plugins]="lineChartPlugins"
     [type]="lineChartType">
   </canvas>
   <div *ngIf="!hasData" class="no-data">

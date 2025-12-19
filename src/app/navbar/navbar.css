@@ -1,5 +1,6 @@
 .navbar {
-  background: rgba(0, 0, 0, 0.4);
+  background: #000000;
+  /* Pure black */
   backdrop-filter: blur(20px);
   color: white;
   padding: 15px 40px;
@@ -11,8 +12,10 @@
   left: 0;
   right: 0;
   z-index: 100;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 2px solid rgba(255, 215, 0, 0.3);
+  /* Gold border */
   box-sizing: border-box;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
 }
 
 .navbar h1 {
@@ -24,4 +27,27 @@
   -webkit-text-fill-color: transparent;
   background-clip: text;
   letter-spacing: 1px;
+  letter-spacing: 1px;
+}
+
+.nav-unit-toggle {
+  background: linear-gradient(135deg, rgba(15, 30, 50, 0.6), rgba(20, 40, 60, 0.55));
+  border: 1px solid rgba(100, 181, 246, 0.3);
+  color: white;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
+
+.nav-unit-toggle:hover {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.3), rgba(255, 193, 7, 0.25));
+  border-color: rgba(255, 215, 0, 0.5);
+  transform: scale(1.1);
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
 }

@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { debounceTime, Subject } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 interface CitySuggestion {
   name: string;
@@ -25,7 +26,7 @@ export class SearchBar {
   isLoading: boolean = false;
   showError: boolean = false;
   
-  private apiKey = 'daa82813cba09f141a7d265aad49ee8b';
+  private apiKey = environment.openWeatherMapApiKey;
   private searchSubject = new Subject<string>();
 
   // Fallback cities when API is not available

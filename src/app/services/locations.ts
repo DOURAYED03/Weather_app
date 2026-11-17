@@ -80,6 +80,9 @@ export class LocationsService {
 
   private loadLocations(): void {
     try {
+      if (typeof localStorage === 'undefined') {
+        return;
+      }
       const stored = localStorage.getItem(this.STORAGE_KEY);
       if (stored) {
         const locations = JSON.parse(stored);
@@ -98,6 +101,9 @@ export class LocationsService {
 
   private saveLocations(locations: SavedLocation[]): void {
     try {
+      if (typeof localStorage === 'undefined') {
+        return;
+      }
       localStorage.setItem(this.STORAGE_KEY, JSON.stringify(locations));
     } catch (error) {
       console.error('Error saving locations to localStorage:', error);

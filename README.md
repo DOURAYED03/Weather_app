@@ -1,59 +1,103 @@
-# Weather
+# Weather App
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.0.3.
+Angular weather dashboard for searching cities, viewing current conditions and forecasts, checking air quality, saving locations, exploring a Leaflet map, and visualizing forecast data with Chart.js.
 
-## Development server
+## Features
 
-To start a local development server, run:
+- City search with OpenWeatherMap geocoding suggestions.
+- Current weather details, wind, visibility, sunrise, and sunset.
+- Multi-day forecast visualization.
+- Air-quality information when the OpenWeatherMap endpoint is available.
+- Saved locations persisted in browser `localStorage`.
+- Leaflet map integration.
+- Chart.js forecast charts.
+- Local mock fallback data when weather requests fail.
 
-```bash
-ng serve
+## Technology
+
+- Angular 21 and TypeScript
+- RxJS
+- Leaflet
+- Chart.js and `ng2-charts`
+- OpenWeatherMap Weather, Forecast, Geocoding, and Air Pollution APIs
+
+## Architecture
+
+The application is a standalone Angular application. `src/app/app.ts` coordinates the main dashboard, `src/app/services/weather.ts` wraps OpenWeatherMap requests and fallback data, and `src/app/services/locations.ts` manages saved locations. Feature components under `src/app/` render search, navigation, weather details, maps, saved locations, and charts.
+
+## Project structure
+
+```text
+src/app/
+  services/             OpenWeatherMap and saved-location services
+  search-bar/           Search and geocoding suggestions
+  weather-display/      Current weather presentation
+  weather-chart/        Forecast chart
+  map/                  Leaflet map
+  saved-locations/      Saved-location UI
+  app.ts                Dashboard orchestration
+src/environments/       Build-time configuration placeholders
+public/                 Static assets
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Prerequisites
 
-## Code scaffolding
+- Node.js and npm.
+- An OpenWeatherMap API key for live data.
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## Installation
 
 ```bash
-ng generate --help
+npm ci
 ```
 
-## Building
+## Configuration
 
-To build the project run:
+Use the example configuration as a reference and replace the placeholder in `src/environments/environment.ts` with your own key:
 
 ```bash
-ng build
+cat src/environments/environment.example.ts
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+`environment.ts` is intentionally committed with an empty key so a clean checkout remains buildable; do not commit a real key.
 
-## Running unit tests
+OpenWeatherMap keys are necessarily exposed in a browser application. Treat the key as public, restrict it in the provider dashboard, and rotate it if it is exposed or abused.
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+## Development
 
 ```bash
-ng test
+npm start
 ```
 
-## Running end-to-end tests
+Open `http://localhost:4200/`.
 
-For end-to-end (e2e) testing, run:
+## Production build
 
 ```bash
-ng e2e
+npm run build
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+## Tests
 
-## Additional Resources
+```bash
+npm test
+```
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+The repository currently contains component tests using Angular's configured Vitest runner.
+
+## Data fallback behavior
+
+When an OpenWeatherMap request fails, the UI uses local mock values so the interface remains usable. These values are not live weather data; production deployments should monitor API failures and make the fallback state visible to users.
+
+## Security considerations
+
+- Never commit a real API key.
+- Restrict the OpenWeatherMap key by application and endpoint where supported.
+- Keep third-party asset requests on HTTPS.
+- Saved locations are stored only in the visitor's browser and are not an account-backed data store.
+
+## Known limitations and future improvements
+
+- The current UV value is a placeholder because the configured OpenWeatherMap endpoints do not provide it.
+- Mock fallback data can look like a successful response.
+- Add explicit loading/error states for live-data failures and environment-specific Angular file replacement for production deployments.

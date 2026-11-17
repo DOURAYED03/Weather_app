@@ -117,7 +117,9 @@ export class WeatherService {
       const variation = Math.sin((hour - 6) * Math.PI / 12) * 6; // Peak at noon
       list.push({
         dt_txt: date.toISOString().replace('T', ' ').substring(0, 19),
-        main: { temp: baseTemp + variation + Math.random() * 2 }
+        main: { temp: baseTemp + variation + Math.random() * 2 },
+        weather: [{ icon: '01d', description: 'clear sky' }],
+        wind: { speed: 3, deg: 180 }
       });
     }
     return of({ list });
